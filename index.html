@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Belt Calc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; }
+        button { width: 100%; padding: 15px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; }
+        #result { margin-top: 20px; font-size: 24px; font-weight: bold; text-align: center; color: #333; }
+    </style>
+</head>
+<body>
+    <h2>Conveyor TPH Calc</h2>
+    <input type="number" id="speed" placeholder="Belt Speed (ft/min)">
+    <input type="number" id="weight" placeholder="Lbs on Belt (lbs)">
+    <input type="number" id="length" placeholder="Foot of Belt Cut (feet)">
+    
+    <button onclick="calculate()">Calculate Tons/Hour</button>
+    <div id="result">---</div>
+
+    <script>
+        function calculate() {
+            const S = parseFloat(document.getElementById('speed').value);
+            const W = parseFloat(document.getElementById('weight').value);
+            const L = parseFloat(document.getElementById('length').value);
+
+            if (S && W && L) {
+                // Your formula: (S * W * 60 * 1) / (1 * L * 1 * 2000)
+                const tph = (S * W * 60) / (L * 2000);
+                document.getElementById('result').innerText = tph.toFixed(2) + " TPH";
+            } else {
+                document.getElementById('result').innerText = "Enter all values";
+            }
+        }
+    </script>
+</body>
+</html>
