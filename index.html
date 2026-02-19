@@ -1,92 +1,255 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
     <title>TPH Calculator</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
+
         body { font-family: -apple-system, sans-serif; padding: 20px; background: #f4f4f9; color: #333; }
+
         h2 { text-align: center; color: #222; margin-bottom: 25px; }
+
         label { font-size: 14px; font-weight: bold; color: #666; }
+
         select, input { 
+
             width: 100%; padding: 12px; margin: 8px 0 20px 0; 
+
             border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; 
+
         }
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
-        .row-group { display: flex; gap: 10px; }
+
+        .btn-group { display: flex; gap: 10px; }
+
         button { 
+
             flex: 1; padding: 15px; border: none; border-radius: 8px; 
-            font-size: 14px; font-weight: bold; color: white; cursor: pointer;
-            text-transform: uppercase;
+
+            font-size: 16px; font-weight: bold; color: white; cursor: pointer;
+
         }
+
         #calc-btn { background: #ff8c00; } /* Safety Orange */
-        #log-btn { background: #28a745; } /* Success Green */
-        #clear-btn { background: #6c757d; } /* Gray */
-        #clear-log-btn { background: #dc3545; padding: 8px; font-size: 12px; } /* Danger Red */
-        
+
+        #clear-btn { background: #6c757d; } /* Industrial Gray */
+
         #result-container { 
+
             margin-top: 30px; padding: 20px; background: white; 
+
             border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; 
+
         }
+
         #result-label { font-size: 14px; color: #888; text-transform: uppercase; }
+
         #result { font-size: 32px; font-weight: bold; color: #222; display: block; }
 
-        /* Log Table Styles */
-        #history-section { margin-top: 30px; padding-bottom: 50px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 14px; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: #eee; font-weight: bold; }
-        .log-header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
-        .log-header { font-size: 16px; font-weight: bold; color: #444; }
     </style>
+
 </head>
+
 <body>
+
+
 
     <h2>TPH Calculator</h2>
 
-    <label>Select Belt (Optional):</label>
-    <select id="beltSelect" onchange="updateSpeed()">
-        <option value="">-- Manual Entry --</option>
-        
-        <optgroup label="CLEVELAND">
-            <option value="486">Cleveland C1</option>
-            <option value="399">Cleveland C2</option>
-            <option value="408">Cleveland C5</option>
-            <option value="430">Cleveland C8</option>
-            <option value="450">Cleveland C13</option>
-            <option value="355">Cleveland C15</option>
-            <option value="290">Cleveland C18</option>
-            <option value="441">Cleveland C20</option>
-            <option value="443">Cleveland C24</option>
-            <option value="142">Cleveland C26A</option>
-        </optgroup>
 
-        <optgroup label="DAYTON">
-            <option value="363">Dayton C14 78s/8s</option>
-            <option value="367">Dayton C9 Crusher Run</option>
-            <option value="347">Dayton C16 Dust Belt</option>
-            <option value="142">Dayton C18 Tunnel Belt</option>
-        </optgroup>
 
-        <optgroup label="DIXIE LEE">
-            <option value="337">Dixie Lee 10s</option>
-            <option value="342">Dixie Lee 4/2s</option>
-            <option value="429">Dixie Lee 57s</option>
-            <option value="424">Dixie Lee 78s/8s</option>
-            <option value="352">Dixie Lee C9</option>
-            <option value="348">Dixie Lee Classifier Feed</option>
-            <option value="371">Dixie Lee Crusher Run</option>
-        </optgroup>
+<select id="beltSelect" onchange="updateSpeed()">
 
-        <optgroup label="MARYVILLE">
-            <option value="463">Maryville C16</option>
-            <option value="448">Maryville C17</option>
-            <option value="460">Maryville C18</option>
-            <option value="437">Maryville C19</option>
-            <option value="452">Maryville C21</option>
-            <option value="430">Maryville C22</option>
-            <option value="441">Maryville C27</option>
-        </optgroup>
-    </select>
+    <option value="">-- Manual Entry --</option>
+
+    
+
+    <optgroup label="CLEVELAND">
+
+        <option value="486">Cleveland C1</option>
+
+        <option value="399">Cleveland C2</option>
+
+        <option value="408">Cleveland C5</option>
+
+        <option value="430">Cleveland C8</option>
+
+        <option value="450">Cleveland C13</option>
+
+        <option value="355">Cleveland C15</option>
+
+        <option value="290">Cleveland C18</option>
+
+        <option value="441">Cleveland C20</option>
+
+        <option value="443">Cleveland C24</option>
+
+        <option value="142">Cleveland C26A</option>
+
+    </optgroup>
+
+
+
+    <optgroup label="DAYTON">
+
+        <option value="363">Dayton C14 78s/8s</option>
+
+        <option value="367">Dayton C9 Crusher Run</option>
+
+        <option value="347">Dayton C16 Dust Belt</option>
+
+        <option value="142">Dayton C18 Tunnel Belt</option>
+
+    </optgroup>
+
+
+
+    <optgroup label="DIXIE LEE">
+
+        <option value="337">Dixie Lee 10s</option>
+
+        <option value="342">Dixie Lee 4/2s</option>
+
+        <option value="429">Dixie Lee 57s</option>
+
+        <option value="424">Dixie Lee 78s/8s</option>
+
+        <option value="352">Dixie Lee C9</option>
+
+        <option value="348">Dixie Lee Classifier Feed</option>
+
+        <option value="371">Dixie Lee Crusher Run</option>
+
+    </optgroup>
+
+
+
+    <optgroup label="MARYVILLE">
+
+        <option value="463">Maryville C16</option>
+
+        <option value="448">Maryville C17</option>
+
+        <option value="460">Maryville C18</option>
+
+        <option value="437">Maryville C19</option>
+
+        <option value="452">Maryville C21</option>
+
+        <option value="430">Maryville C22</option>
+
+        <option value="441">Maryville C27</option>
+
+    </optgroup>
+
+</select>
+
+
 
     <label>Belt Speed (ft/min):</label>
-    <input type="number" id="speed" inputmode="decimal" placeholder="e.g. 459">
+
+    <input type="number" id="speed" placeholder="e.g. 459">
+
+
+
+    <label>Lbs on Belt (lbs):</label>
+
+    <input type="number" id="weight" placeholder="e.g. 50">
+
+
+
+    <label>Length of Belt Cut (ft):</label>
+
+    <input type="number" id="length" placeholder="e.g. 2">
+
+
+
+    <div class="btn-group">
+
+        <button id="calc-btn" onclick="calculate()">CALCULATE</button>
+
+        <button id="clear-btn" onclick="resetFields()">CLEAR</button>
+
+    </div>
+
+
+
+    <div id="result-container">
+
+        <span id="result-label">Calculated Output</span>
+
+        <span id="result">---</span>
+
+    </div>
+
+
+
+    <script>
+
+        function updateSpeed() {
+
+            const selection = document.getElementById('beltSelect').value;
+
+            if (selection !== "") {
+
+                document.getElementById('speed').value = selection;
+
+            }
+
+        }
+
+
+
+        function calculate() {
+
+            const S = parseFloat(document.getElementById('speed').value);
+
+            const W = parseFloat(document.getElementById('weight').value);
+
+            const L = parseFloat(document.getElementById('length').value);
+
+
+
+            if (S && W && L) {
+
+                // Formula: (S * W * 60) / (L * 2000)
+
+                const tph = (S * W * 60) / (L * 2000);
+
+                document.getElementById('result').innerText = tph.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " TPH";
+
+            } else {
+
+                document.getElementById('result').innerText = "Missing Data";
+
+            }
+
+        }
+
+
+
+        function resetFields() {
+
+            document.getElementById('speed').value = '';
+
+            document.getElementById('weight').value = '';
+
+            document.getElementById('length').value = '';
+
+            document.getElementById('beltSelect').value = '';
+
+            document.getElementById('result').innerText = '---';
+
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>
