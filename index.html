@@ -11,86 +11,114 @@
             width: 100%; padding: 12px; margin: 8px 0 20px 0; 
             border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; 
         }
-        .btn-group { display: flex; gap: 10px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .row-group { display: flex; gap: 10px; }
         button { 
             flex: 1; padding: 15px; border: none; border-radius: 8px; 
             font-size: 16px; font-weight: bold; color: white; cursor: pointer;
         }
         #calc-btn { background: #ff8c00; } /* Safety Orange */
+        #log-btn { background: #007bff; } /* Action Blue */
         #clear-btn { background: #6c757d; } /* Industrial Gray */
+        
         #result-container { 
             margin-top: 30px; padding: 20px; background: white; 
             border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; 
         }
         #result-label { font-size: 14px; color: #888; text-transform: uppercase; }
         #result { font-size: 32px; font-weight: bold; color: #222; display: block; }
+
+        /* Log Table Styles */
+        #history-section { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #eee; font-weight: bold; }
+        .log-header { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #444; }
     </style>
 </head>
 <body>
 
     <h2>TPH Calculator</h2>
 
-<select id="beltSelect" onchange="updateSpeed()">
-    <option value="">-- Manual Entry --</option>
-    
-    <optgroup label="CLEVELAND">
-        <option value="486">Cleveland C1</option>
-        <option value="399">Cleveland C2</option>
-        <option value="408">Cleveland C5</option>
-        <option value="430">Cleveland C8</option>
-        <option value="450">Cleveland C13</option>
-        <option value="355">Cleveland C15</option>
-        <option value="290">Cleveland C18</option>
-        <option value="441">Cleveland C20</option>
-        <option value="443">Cleveland C24</option>
-        <option value="142">Cleveland C26A</option>
-    </optgroup>
+    <select id="beltSelect" onchange="updateSpeed()">
+        <option value="">-- Manual Entry --</option>
+        
+        <optgroup label="CLEVELAND">
+            <option value="486">Cleveland C1</option>
+            <option value="399">Cleveland C2</option>
+            <option value="408">Cleveland C5</option>
+            <option value="430">Cleveland C8</option>
+            <option value="450">Cleveland C13</option>
+            <option value="355">Cleveland C15</option>
+            <option value="290">Cleveland C18</option>
+            <option value="441">Cleveland C20</option>
+            <option value="443">Cleveland C24</option>
+            <option value="142">Cleveland C26A</option>
+        </optgroup>
 
-    <optgroup label="DAYTON">
-        <option value="363">Dayton C14 78s/8s</option>
-        <option value="367">Dayton C9 Crusher Run</option>
-        <option value="347">Dayton C16 Dust Belt</option>
-        <option value="142">Dayton C18 Tunnel Belt</option>
-    </optgroup>
+        <optgroup label="DAYTON">
+            <option value="363">Dayton C14 78s/8s</option>
+            <option value="367">Dayton C9 Crusher Run</option>
+            <option value="347">Dayton C16 Dust Belt</option>
+            <option value="142">Dayton C18 Tunnel Belt</option>
+        </optgroup>
 
-    <optgroup label="DIXIE LEE">
-        <option value="337">Dixie Lee 10s</option>
-        <option value="342">Dixie Lee 4/2s</option>
-        <option value="429">Dixie Lee 57s</option>
-        <option value="424">Dixie Lee 78s/8s</option>
-        <option value="352">Dixie Lee C9</option>
-        <option value="348">Dixie Lee Classifier Feed</option>
-        <option value="371">Dixie Lee Crusher Run</option>
-    </optgroup>
+        <optgroup label="DIXIE LEE">
+            <option value="337">Dixie Lee 10s</option>
+            <option value="342">Dixie Lee 4/2s</option>
+            <option value="429">Dixie Lee 57s</option>
+            <option value="424">Dixie Lee 78s/8s</option>
+            <option value="352">Dixie Lee C9</option>
+            <option value="348">Dixie Lee Classifier Feed</option>
+            <option value="371">Dixie Lee Crusher Run</option>
+        </optgroup>
 
-    <optgroup label="MARYVILLE">
-        <option value="463">Maryville C16</option>
-        <option value="448">Maryville C17</option>
-        <option value="460">Maryville C18</option>
-        <option value="437">Maryville C19</option>
-        <option value="452">Maryville C21</option>
-        <option value="430">Maryville C22</option>
-        <option value="441">Maryville C27</option>
-    </optgroup>
-</select>
+        <optgroup label="MARYVILLE">
+            <option value="463">Maryville C16</option>
+            <option value="448">Maryville C17</option>
+            <option value="460">Maryville C18</option>
+            <option value="437">Maryville C19</option>
+            <option value="452">Maryville C21</option>
+            <option value="430">Maryville C22</option>
+            <option value="441">Maryville C27</option>
+        </optgroup>
+    </select>
 
     <label>Belt Speed (ft/min):</label>
-    <input type="number" id="speed" placeholder="e.g. 459">
+    <input type="number" id="speed" inputmode="decimal" placeholder="e.g. 459">
 
     <label>Lbs on Belt (lbs):</label>
-    <input type="number" id="weight" placeholder="e.g. 50">
+    <input type="number" id="weight" inputmode="decimal" placeholder="e.g. 50">
 
     <label>Length of Belt Cut (ft):</label>
-    <input type="number" id="length" placeholder="e.g. 2">
+    <input type="number" id="length" inputmode="decimal" placeholder="e.g. 2">
 
     <div class="btn-group">
         <button id="calc-btn" onclick="calculate()">CALCULATE</button>
-        <button id="clear-btn" onclick="resetFields()">CLEAR</button>
+        <div class="row-group">
+            <button id="log-btn" onclick="logToTable()">LOG THIS</button>
+            <button id="clear-btn" onclick="resetFields()">CLEAR ALL</button>
+        </div>
     </div>
 
     <div id="result-container">
         <span id="result-label">Calculated Output</span>
         <span id="result">---</span>
+    </div>
+
+    <div id="history-section">
+        <div class="log-header">Daily Calculation Log</div>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Belt Name</th>
+                    <th>TPH</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
     </div>
 
     <script>
@@ -107,7 +135,6 @@
             const L = parseFloat(document.getElementById('length').value);
 
             if (S && W && L) {
-                // Formula: (S * W * 60) / (L * 2000)
                 const tph = (S * W * 60) / (L * 2000);
                 document.getElementById('result').innerText = tph.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " TPH";
             } else {
@@ -115,12 +142,34 @@
             }
         }
 
+        function logToTable() {
+            const result = document.getElementById("result").innerText;
+            if (result === "---" || result === "Missing Data") return;
+
+            const table = document.getElementById("historyTable").getElementsByTagName('tbody')[0];
+            const beltSelect = document.getElementById("beltSelect");
+            
+            // Gets the name of the belt selected, or "Manual" if nothing picked
+            const beltName = beltSelect.selectedIndex > 0 ? beltSelect.options[beltSelect.selectedIndex].text : "Manual Entry";
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const newRow = table.insertRow(0); // Puts newest at top
+            newRow.insertCell(0).innerText = timeStr;
+            newRow.insertCell(1).innerText = beltName;
+            newRow.insertCell(2).innerText = result;
+        }
+
         function resetFields() {
-            document.getElementById('speed').value = '';
-            document.getElementById('weight').value = '';
-            document.getElementById('length').value = '';
-            document.getElementById('beltSelect').value = '';
-            document.getElementById('result').innerText = '---';
+            if(confirm("This will clear your inputs AND your log table. Continue?")) {
+                document.getElementById('speed').value = '';
+                document.getElementById('weight').value = '';
+                document.getElementById('length').value = '';
+                document.getElementById('beltSelect').value = '';
+                document.getElementById('result').innerText = '---';
+                document.getElementById("historyTable").getElementsByTagName('tbody')[0].innerHTML = '';
+            }
         }
     </script>
 
