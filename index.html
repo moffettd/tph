@@ -36,12 +36,20 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #eee; font-weight: bold; }
         .log-header-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
-        .log-header { font-size: 16px; font-weight: bold; color: #444; }
+        #sync-status { font-size: 12px; text-align: center; color: #28a745; margin-top: 8px; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
     <h2>TPH Calculator</h2>
+
+    <label>Current Plant Site:</label>
+    <select id="plantSite">
+        <option value="Cleveland">CLEVELAND</option>
+        <option value="Dayton">DAYTON</option>
+        <option value="Dixie Lee">DIXIE LEE</option>
+        <option value="Maryville">MARYVILLE</option>
+    </select>
 
     <label>Select Belt (Optional):</label>
     <select id="beltSelect" onchange="updateSpeed()">
@@ -103,7 +111,7 @@
     <div class="btn-group">
         <button id="calc-btn" onclick="calculate()">CALCULATE</button>
         <div class="row-group">
-            <button id="log-btn" onclick="logToTable()">LOG THIS</button>
+            <button id="log-btn" onclick="logData()">LOG & SYNC</button>
             <button id="clear-btn" onclick="resetFields()">CLEAR INPUTS</button>
         </div>
     </div>
@@ -111,6 +119,7 @@
     <div id="result-container">
         <span id="result-label">Calculated Output</span>
         <span id="result">---</span>
+        <div id="sync-status">✔ SYNCED TO GOOGLE SHEETS</div>
     </div>
 
     <div id="history-section">
@@ -126,12 +135,14 @@
                 </tr>
             </thead>
             <tbody>
-                </tbody>
+            </tbody>
         </table>
     </div>
 
     <script>
-        // Autofills speed when you pick a belt
+        // Replace with your Google Sheets Deployment URL
+        const GOOGLE_URL = "https://script.google.com/a/macros/vmcmail.com/s/AKfycbytobmJgcFpXqAdEaIQXF8nSFvo12jD99I3OgFH2Gm7fhzVqZlRCSAEkUNnAe15DmG4/exec";
+
         function updateSpeed() {
             const dropdown = document.getElementById('beltSelect');
             const speedInput = document.getElementById('speed');
@@ -153,7 +164,7 @@
             }
         }
 
-        function logToTable() {
+        function logData() {
             const resultText = document.getElementById("result").innerText;
             if (resultText === "---" || resultText === "Missing Data") {
                 alert("Calculate something first!");
@@ -162,15 +173,33 @@
 
             const tableBody = document.getElementById("historyTable").getElementsByTagName('tbody')[0];
             const beltSelect = document.getElementById("beltSelect");
-            const beltName = beltSelect.selectedIndex > 0 ? beltSelect.options[beltSelect.selectedIndex].text : "Manual Entry";
+            const plant = document.getElementById("plantSite").value;
+            const belt = beltSelect.selectedIndex > 0 ? beltSelect.options[beltSelect.selectedIndex].text : "Manual Entry";
             
             const now = new Date();
             const dateStr = (now.getMonth() + 1) + '/' + now.getDate() + '/' + now.getFullYear();
 
-            const newRow = tableBody.insertRow(0); // Add newest to top
+            // 1. Update the Local Table
+            const newRow = tableBody.insertRow(0); 
             newRow.insertCell(0).innerText = dateStr;
-            newRow.insertCell(1).innerText = beltName;
+            newRow.insertCell(1).innerText = belt;
             newRow.insertCell(2).innerText = resultText;
+
+            // 2. Send to Google Sheets
+            fetch(GOOGLE_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    date: dateStr,
+                    plant: plant,
+                    belt: belt,
+                    tph: resultText
+                })
+            }).then(() => {
+                document.getElementById("sync-status").style.display = "block";
+                setTimeout(() => { document.getElementById("sync-status").style.display = "none"; }, 3000);
+            }).catch(err => alert("Sync Failed: " + err));
         }
 
         function resetFields() {
